@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Level/Camera.gd" type="Script" id=1]
+[ext_resource path="res://icon.png" type="Texture" id=2]
+
+[node name="Level" type="Node2D"]
+
+[node name="Rooms" type="Node2D" parent="."]
+
+[node name="icon2" type="Sprite" parent="Rooms"]
+position = Vector2( 338.823, 179.651 )
+scale = Vector2( 4.85851, 4.85851 )
+texture = ExtResource( 2 )
+
+[node name="icon" type="Sprite" parent="Rooms"]
+position = Vector2( 650.654, 181.541 )
+scale = Vector2( 4.83882, 4.79945 )
+texture = ExtResource( 2 )
+
+[node name="Camera" type="Camera2D" parent="."]
+current = true
+script = ExtResource( 1 )
+CameraMoveSpeed = 20.0
+CameraZoomSpeed = 0.1
+
+[node name="Tween" type="Tween" parent="Camera"]
+playback_process_mode = 0
