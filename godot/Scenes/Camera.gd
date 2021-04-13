@@ -2,7 +2,7 @@
 extends Camera2D
 class_name LevelCamera
 
-export(float) var CameraMoveSpeed := 0.0
+export(float) var CameraMoveSpeed := 10.0
 export(float) var CameraZoomSpeed := 1.0
 
 export(float) var CameraZoomMax := 4.0

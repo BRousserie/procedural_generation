@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Level/LevelDifficulty.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+level_length = 30.0
+min_branch_size = 0
+max_branch_size = 0
