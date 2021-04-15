@@ -42,6 +42,10 @@ config/name="Procedural Generation"
 run/main_scene="res://Scenes/LevelGenerator.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Globals="*res://Globals.gd"
+
 [input]
 
 camera_down={

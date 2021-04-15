@@ -1,9 +1,14 @@
-[gd_resource type="Resource" load_steps=2 format=2]
+[gd_resource type="Resource" load_steps=3 format=2]
 
 [ext_resource path="res://Level/LevelDifficulty.gd" type="Script" id=1]
 
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
 [resource]
 script = ExtResource( 1 )
-level_length = 20.0
-min_branch_size = 0
-max_branch_size = 0
+level_length = 15.0
+avg_branch_count = 4
+min_branch_size = 2
+max_branch_size = 6
+branch_size_scale = SubResource( 1 )
