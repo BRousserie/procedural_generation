@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node",
+"class": "EnemyGenerator",
+"language": "GDScript",
+"path": "res://Enemies/EnemyGenerator.gd"
+}, {
 "base": "Node2D",
 "class": "Level",
 "language": "GDScript",
@@ -24,22 +29,35 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Level/LevelDifficulty.gd"
 }, {
+"base": "Node",
+"class": "Possibility",
+"language": "GDScript",
+"path": "res://Enemies/Possibility.gd"
+}, {
 "base": "Node2D",
 "class": "Room",
 "language": "GDScript",
 "path": "res://Rooms/Room.gd"
+}, {
+"base": "Node",
+"class": "Square",
+"language": "GDScript",
+"path": "res://Enemies/Square.gd"
 } ]
 _global_script_class_icons={
+"EnemyGenerator": "",
 "Level": "",
 "LevelCamera": "",
 "LevelDifficulty": "",
-"Room": ""
+"Possibility": "",
+"Room": "",
+"Square": ""
 }
 
 [application]
 
 config/name="Procedural Generation"
-run/main_scene="res://Scenes/LevelGenerator.tscn"
+run/main_scene="res://Enemies/Enemy.tscn"
 config/icon="res://icon.png"
 
 [input]
