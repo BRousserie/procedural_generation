@@ -60,6 +60,10 @@ config/name="Procedural Generation"
 run/main_scene="res://Enemies/Enemy.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Globals="*res://Globals.gd"
+
 [input]
 
 camera_down={
