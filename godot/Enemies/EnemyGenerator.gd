@@ -17,15 +17,16 @@ func _init():
 	#this.map = new Square[4][4];
 	for i in range (4):
 		map.append([])
+	#	print("Ok !")
 	
 	
 	for i in range(map.size()):
-		for j in range(map[0].size()):
+		for j in range(map.size()):
 			map[i].append(Square.new(i*4 + j, 0))
 		
 	
 	
-	map[0][1].sides[2][3] = 1
+	map[0][1].sides[2][1] = 1
 	map[0][2].sides[0][1] = 1
 	
 	
@@ -40,7 +41,7 @@ func _init():
 	map[2][0].sides[2][1] = 1
 	map[2][1].sides[1][1] = 1
 	map[2][1].sides[3][1] = 1
-	
+	"""
 	map[2][2].sides[0][0] = -1
 	map[2][2].sides[0][1] = -1
 	map[2][2].sides[0][2] = -1
@@ -53,7 +54,7 @@ func _init():
 	map[2][2].sides[3][0] = -1
 	map[2][2].sides[3][1] = -1
 	map[2][2].sides[3][2] = -1
-	
+	"""
 	map[3][0].sides[0][1] = 1
 	map[3][0].sides[1][1] = 1
 	
@@ -72,9 +73,13 @@ func GenerateEnemy(var size: int, var difficulty: int):
 	
 	current_size = size;
 	
+	
+	for i in range(size):
+		result.append([])
+	
 	for i in range(result.size()):
 		for j in range(result.size()):
-			result[i][j] = Possibility.new(map, j, i)
+			result[i].append(Possibility.new(map, j, i))
 		
 	
     
@@ -84,7 +89,7 @@ func GenerateEnemy(var size: int, var difficulty: int):
     #Collapse(size/2, size/2);
     
 	result[size/2][size/2].possibilities.clear()
-	result[size/2][size/2].possibilities.add(map[1][1])
+	result[size/2][size/2].possibilities.append(map[1][1])
 	result[size/2][size/2].onBorder = true
     
     
@@ -97,11 +102,11 @@ func GenerateEnemy(var size: int, var difficulty: int):
     #Collapse(6, 4);
     
     ##println(result[3][4].possibilities.get(1).type);
-	#return result;
+	return result;
 	
 
 func Collapse(var x: int, var y: int):
-	print("Collapse at : " + str(x) + ", " + str(y))
+	#print("Collapse at : " + str(x) + ", " + str(y))
 	
 	
 	#println("Collapse at x:" + x + "; y:" + y);
@@ -122,7 +127,7 @@ func Collapse(var x: int, var y: int):
 	
 	
 	
-	if ( x-1 >= 0 && !result[y][x-1].updateWith(result[y][x],3)):
+	if ( x-1 >= 0 && !result[y][x-1].updateWith(result[y][x],1)):
 		Collapse(x-1, y);
     
 #check in the map of possibilities the next square to pick, then collapses its neighbours and goes into recursion
@@ -136,7 +141,7 @@ func GenerateNextStep():
 			
 			if (p.onBorder) :
 				possiOnBorder.append(p)
-				print("x:" + str(p.posX) + " ; y:" + str(p.posY))
+				#print("x:" + str(p.posX) + " ; y:" + str(p.posY))
 				
 				
 	#println((int)random(6));
@@ -145,19 +150,20 @@ func GenerateNextStep():
 	if (possiOnBorder.size() > 0):
 		var chosenPoss = possiOnBorder[rand_range(0, possiOnBorder.size())]
 		
-		var chosenSquare = chosenPoss.possibilities[rand_range(0, chosenPoss.possibilities.size())]
+		if (chosenPoss.possibilities.size() > 0):
+			var chosenSquare = chosenPoss.possibilities[rand_range(0, chosenPoss.possibilities.size())]
 		
-		chosenPoss.possibilities.clear()
-		chosenPoss.possibilities.add(chosenSquare)
+			chosenPoss.possibilities.clear()
+			chosenPoss.possibilities.append(chosenSquare)
 		
-		print("pos chosen : " + str(chosenPoss.posX) + " : " + str(chosenPoss.posY))
+			#print("pos chosen : " + str(chosenPoss.posX) + " : " + str(chosenPoss.posY))
 		
-		print("type : " + str(chosenSquare.type))
-		print(" ")
+			#print("type : " + str(chosenSquare.type))
+			#print(" ")
 		
-		Collapse(chosenPoss.posX, chosenPoss.posY)
+			Collapse(chosenPoss.posX, chosenPoss.posY)
 		
-		chosenPoss.onBorder = false;
+			chosenPoss.onBorder = false;
 		
 		
 		#GenerateNextStep();

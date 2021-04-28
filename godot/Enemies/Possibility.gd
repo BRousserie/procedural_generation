@@ -30,7 +30,7 @@ func add(s : Square) -> void :
 
 func updateWith(other: Possibility, dir: int) :
 	var okay := false
-	
+	"""
 	print("Update square : " + str(posX) + ", " + str(posY))
 	print("With square : " + str(other.posX) + ", " + str(other.posY))
 	print("Containing : ")
@@ -44,24 +44,24 @@ func updateWith(other: Possibility, dir: int) :
 	
 	print("")
 	
-	
+	"""
 	var toRemove : Array
 	
 	for s in possibilities :
 		okay = false
 		for s2 in other.possibilities :
 			if (!okay) :
-				okay |= s2.isCompatible(s, dir)
+				okay = okay || s2.isCompatible(s, dir)
 		
 		if (!okay) :
 			toRemove.append(s)
 	
 	if (other.possibilities.size() == 1) :
 		for s2 in other.possibilities :
-			onBorder |= s2.type==5 || s2.type==8 || s2.type==9 || s2.type==12 ||s2.type==13 ||s2.type==14 ||s2.type==15
+			onBorder = onBorder || s2.type==5 || s2.type==8 || s2.type==9 || s2.type==12 ||s2.type==13 ||s2.type==14 ||s2.type==15
 	
 	for r in  toRemove :
-		possibilities.remove(r)
+		possibilities.remove(possibilities.find(r))
 	
 	
 	if (possibilities.size() == 1) :
