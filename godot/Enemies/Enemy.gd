@@ -6,6 +6,9 @@ extends Node2D
 var generator: EnemyGenerator
 var res: Array
 
+var size = 10
+
+var wait_input = false
 
 func _ready() -> void:
 	
@@ -15,13 +18,18 @@ func _ready() -> void:
 
 # Generates a new level
 func generate() -> void:
+	var start_time = OS.get_system_time_msecs()
 	generator = EnemyGenerator.new()
-	res = generator.GenerateEnemy(5, 1)
+	res = generator.GenerateEnemy(size, 10)
+	
+	if (!wait_input):
+		generator.FullyGenerate()
+	print(str(OS.get_system_time_msecs() - start_time))
 	dr()
 
 func _input(ev):
 	
-	if ev is InputEventKey and ev.scancode == KEY_K and not ev.pressed:
+	if ev is InputEventKey and ev.scancode == KEY_K and not ev.pressed and wait_input:
 		for n in get_children():
 			remove_child(n)
 			n.queue_free()
@@ -32,8 +40,8 @@ func _input(ev):
 
 func dr():
 	var type
-	for i in range(5):
-		for j in range(5):
+	for i in range(size):
+		for j in range(size):
 			if(res[i][j].possibilities.size() == 1):
 				var sprite = Sprite.new()
 				type = res[i][j].possibilities[0].type

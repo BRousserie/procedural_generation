@@ -9,7 +9,7 @@ var posY:int
 
 #flag to know if the possibility is on the border of the generation
 var onBorder := false
-var dead := false
+var generated := false
   
 func _init(all: Array, pX: int, pY: int) :
 	
@@ -58,7 +58,13 @@ func updateWith(other: Possibility, dir: int) :
 	
 	if (other.possibilities.size() == 1) :
 		for s2 in other.possibilities :
-			onBorder = onBorder || s2.type==5 || s2.type==8 || s2.type==9 || s2.type==12 ||s2.type==13 ||s2.type==14 ||s2.type==15
+			onBorder = onBorder || (s2.type==5)
+			onBorder = onBorder || (s2.type==8 && (dir==0 ||dir==2))
+			onBorder = onBorder || (s2.type==9 && (dir==1 ||dir==3))
+			onBorder = onBorder || (s2.type==12 && (dir==2 ||dir==3))
+			onBorder = onBorder || (s2.type==13 && (dir==3 ||dir==0))
+			onBorder = onBorder || (s2.type==14 && (dir==0 ||dir==1))
+			onBorder = onBorder || (s2.type==15 && (dir==1 ||dir==2))
 	
 	for r in  toRemove :
 		possibilities.remove(possibilities.find(r))
@@ -66,10 +72,8 @@ func updateWith(other: Possibility, dir: int) :
 	
 	if (possibilities.size() == 1) :
 		onBorder = false
+		generated = true
 	
-	
-	if (possibilities.size() == 0) :
-		dead = true
 	
 	return toRemove.size() == 0;
     
