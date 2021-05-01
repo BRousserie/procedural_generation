@@ -12,8 +12,8 @@ _data = [ Vector2( 0, 4.28182 ), 0.0, 22.3217, 0, 0, Vector2( 0.95, 10.1545 ), 4
 
 [sub_resource type="Curve" id=2]
 min_value = 1.0
-max_value = 8.0
-_data = [ Vector2( 0, 1 ), 0.0, 21.2779, 0, 0, Vector2( 1, 8 ), 0.0, 0.0, 0, 0 ]
+max_value = 4.0
+_data = [ Vector2( 0, 1 ), 0.0, 9.17786, 0, 0, Vector2( 0.883333, 4 ), 0.0, 0.0, 0, 0, Vector2( 1, 1.6 ), 0.0, 0.0, 0, 0 ]
 
 [resource]
 script = ExtResource( 1 )
