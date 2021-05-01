@@ -75,4 +75,5 @@ margin_top = 30.0
 margin_right = 225.0
 margin_bottom = 50.0
 text = "Generate"
+
 [connection signal="pressed" from="UI/GUI/Margin/LeftMenu/ButtonGenerate" to="." method="_on_ButtonGenerate_pressed"]

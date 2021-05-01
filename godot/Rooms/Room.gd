@@ -9,7 +9,7 @@ enum RoomType {
 }
 
 enum CellType {
-	EMPTY, WATER, ENEMY, TREASURE, LIGHT, BARREL
+	EMPTY, WATER, ENEMY, TREASURE, LIGHT, BARREL, WALL, DOOR
 }
 
 # cell size in pixels
@@ -32,13 +32,15 @@ var nb_lights : int
 var nb_barrels : int
 
 var _doors := [false, false, false, false]
-var cells = []
+var cells := {}
 
 # Generates the room content
 func generate(difficulty: LevelDifficulty, level_progression: float) -> void:
+	for x in range (WIDTH):
+		for y in range (HEIGHT):
+			cells[Vector2(x, y)] = CellType.EMPTY
 	create_room()
-	fill_room()
-
+	fill_room(difficulty, level_progression)
 
 func create_room() -> void:
 	fill_ground()
@@ -71,19 +73,33 @@ func place_walls() -> void:
 		for y in range(HEIGHT):
 			if (x == 0 || y == 0 || x == WIDTH-1 || y == HEIGHT-1):
 				place_sprite("res://Rooms/wall.tres", x * CELL_SIZE, y * CELL_SIZE)
+				cells[Vector2(x, y)] = CellType.WALL
 
 func place_doors() -> void:
 	for i in range(4):
 		if _doors[i]:
 			var pos: Vector2 = _get_door_pixel_position(i)
-			place_sprite("res://Rooms/door.tres", pos.x, pos.y)
+			cells[pos] = CellType.DOOR
+			var sprite = Sprite.new()
+			sprite.texture = load("res://Rooms/door.tres")
+			sprite.position = Vector2(pos.x, pos.y)
+			sprite.scale = Vector2(2, 2)
+			add_child(sprite)
 
-func fill_room() -> void:
+func fill_room(difficulty: LevelDifficulty, level_progression: float) -> void:
+	init_items(difficulty, level_progression)
 	place_ponds()
 	place_treasures()
 	place_barrels()
 	place_lights()
 	place_enemies()
+
+func init_items(difficulty: LevelDifficulty, level_progression: float) -> void:
+	nb_enemies = difficulty.nb_enemies.interpolate(level_progression)
+	nb_ponds = difficulty.nb_ponds
+	nb_treasures = difficulty.nb_treasures
+	nb_barrels = difficulty.nb_barrels
+	nb_lights = difficulty.nb_lights
 
 func place_ponds() -> void:
 	for i in range(nb_ponds):
@@ -108,25 +124,29 @@ func place_enemies() -> void:
 	# var new_enemy := new_enemy_scene as Enemy
 
 
-func place_item(var path, var margin, var celltype) -> void:
+func place_item(var path, var size, var celltype) -> void:
 	var sprite = Sprite.new()
 	sprite.texture = load(path)
 	# naive approach, randomly looking for somewhere to place items
-	var tries = 10
+	var tries = 5
 	for i in range(tries):
-		var pos = Vector2(randi() % (WIDTH - margin * 2) + margin, 
-			randi() % (HEIGHT - margin * 2) + margin)
+		var pos = Vector2(randi() % (WIDTH - 3) + size, 
+			randi() % (HEIGHT - 3) + size)
 		var placeable = true
-		for x in range (pos.x, pos.x + sprite.texture.WIDTH):
-			for y in range (pos.y, pos.y + sprite.texture.WIDTH):
-				if (cells[Vector2(x, y)] != CellType.EMPTY):
-					placeable = false
+		if (pos.x + size > WIDTH - 1 || pos.y + size > HEIGHT - 1):
+			placeable = false
+		else :
+			for x in range (pos.x, pos.x + size+1):
+				for y in range (pos.y, pos.y + size+1):
+					if (cells[Vector2(x, y)] != CellType.EMPTY):
+						placeable = false
 		if (placeable):
-			i = tries
-			sprite.position = pos
+			i = tries+1
+			sprite.position = pos * CELL_SIZE
+			sprite.position += Vector2(CELL_SIZE/2, CELL_SIZE/2)
 			add_child(sprite)
-			for x in range (pos.x, pos.x + sprite.texture.WIDTH):
-				for y in range (pos.y, pos.y + sprite.texture.WIDTH):
+			for x in range (pos.x, pos.x + sprite.texture.get_width() / CELL_SIZE):
+				for y in range (pos.y, pos.y + sprite.texture.get_height() / CELL_SIZE):
 					cells[Vector2(x, y)] = celltype
 
 func place_sprite(var path, var x, var y) -> void:
@@ -185,7 +205,7 @@ func get_room_center() -> Vector2:
 func _get_door_pixel_position(door_index: int) -> Vector2:
 	var direction : Vector2 = Globals.CARD_DIRS[door_index]
 	var dist : int = (get_pixel_height() if door_index < 2 else get_pixel_width()) / 2
-	return get_room_center() + direction * dist * 0.9
+	return get_room_center() + direction * dist
 
 
 func set_door(door_index: int, state := true) -> void:
