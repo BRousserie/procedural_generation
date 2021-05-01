@@ -125,11 +125,16 @@ func place_enemies(difficulty: LevelDifficulty, level_progression: float) -> voi
 	for i in range (nb_enemies):
 		var new_enemy_scene : Node2D = EnemyBaseScene.instance()
 		var new_enemy := new_enemy_scene as Enemy
-		new_enemy.generate(randi() % 4) 	#3.9 * nb_enemies / difficulty.nb_enemies.max_value)
-		new_enemy.scale = Vector2(0.5, 0.5)
-		new_enemy.position = Vector2(
-			-new_enemy.size / 2 + randi() % int(WIDTH - new_enemy.size * 2) + new_enemy.size,
-			-new_enemy.size / 2 + randi() % int(HEIGHT - new_enemy.size * 2) + new_enemy.size) * CELL_SIZE
+		var random_range = int(difficulty.enemies_size.interpolate(level_progression) - difficulty.enemies_size.min_value)
+		if (random_range == 0):
+			random_range = 1
+		new_enemy.generate((randi() % random_range)
+			+ difficulty.enemies_size.min_value)
+		new_enemy.scale = Vector2(0.25, 0.25)
+		var pos = Vector2(
+			randi() % 5 * WIDTH / 6,
+			randi() % 3 * HEIGHT / 4)
+		new_enemy.position = pos * CELL_SIZE
 		add_child(new_enemy)
 
 func place_item(var path, var size, var celltype) -> void:
@@ -137,7 +142,9 @@ func place_item(var path, var size, var celltype) -> void:
 	sprite.texture = load(path)
 	# naive approach, randomly looking for somewhere to place items
 	var tries = 5
-	for i in range(tries):
+	var i = 0
+	var placed = false
+	while(i < tries):
 		var pos = Vector2(randi() % (WIDTH - 3) + size, 
 			randi() % (HEIGHT - 3) + size)
 		var placeable = true
@@ -149,13 +156,15 @@ func place_item(var path, var size, var celltype) -> void:
 					if (cells[Vector2(x, y)] != CellType.EMPTY):
 						placeable = false
 		if (placeable):
-			i = tries+1
+			i = tries
 			sprite.position = pos * CELL_SIZE
 			sprite.position += Vector2(CELL_SIZE/2, CELL_SIZE/2)
 			add_child(sprite)
 			for x in range (pos.x, pos.x + sprite.texture.get_width() / CELL_SIZE):
 				for y in range (pos.y, pos.y + sprite.texture.get_height() / CELL_SIZE):
 					cells[Vector2(x, y)] = celltype
+		else:
+			++i
 
 func place_sprite(var path, var x, var y) -> void:
 	var sprite = Sprite.new()

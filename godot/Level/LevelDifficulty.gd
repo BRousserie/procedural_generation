@@ -10,6 +10,7 @@ export var max_branch_size : int
 export var branch_size_scale : Curve
 
 export var nb_enemies : Curve
+export var enemies_size : Curve
 export var nb_ponds : int
 export var nb_treasures : int
 export var nb_lights : int
