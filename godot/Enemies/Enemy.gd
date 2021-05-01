@@ -6,21 +6,21 @@ class_name Enemy
 var generator: EnemyGenerator
 var res: Array
 
-var size = 10
+var size
 
 var wait_input = false
 
 func _ready() -> void:
 	
 	randomize()
-	generate()
 
 
 # Generates a new level
-func generate() -> void:
+func generate(var difficulty) -> void:
+	size = difficulty/3 +5
 	var start_time = OS.get_system_time_msecs()
 	generator = EnemyGenerator.new()
-	res = generator.GenerateEnemy(size, 10)
+	res = generator.GenerateEnemy(size, difficulty)
 	
 	if (!wait_input):
 		generator.FullyGenerate()

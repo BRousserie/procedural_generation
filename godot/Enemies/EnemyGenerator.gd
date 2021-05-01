@@ -171,7 +171,7 @@ func GenerateNextStep():
 		var nrand = rand_range(0, difficulty) + count
 		
 		var try_extension
-		if nrand < difficulty-count*2:
+		if nrand < difficulty-count*3:
 			
 			var posss = []
 			for possi in possiOnBorder:
