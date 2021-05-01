@@ -92,10 +92,13 @@ func fill_room(difficulty: LevelDifficulty, level_progression: float) -> void:
 	place_treasures()
 	place_barrels()
 	place_lights()
-	place_enemies()
+	place_enemies(difficulty, level_progression)
 
 func init_items(difficulty: LevelDifficulty, level_progression: float) -> void:
-	nb_enemies = difficulty.nb_enemies.interpolate(level_progression)
+	if (type == RoomType.START):
+		nb_enemies = 0
+	else:
+		nb_enemies = difficulty.nb_enemies.interpolate(level_progression)
 	nb_ponds = difficulty.nb_ponds
 	nb_treasures = difficulty.nb_treasures
 	nb_barrels = difficulty.nb_barrels
@@ -118,11 +121,16 @@ func place_lights() -> void:
 		place_item("res://Rooms/light.tres", 1, CellType.LIGHT)
 
 
-func place_enemies() -> void:
-	pass
-	# var new_enemy_scene : Node2D = EnemyBaseScene.instance()
-	# var new_enemy := new_enemy_scene as Enemy
-
+func place_enemies(difficulty: LevelDifficulty, level_progression: float) -> void:
+	for i in range (nb_enemies):
+		var new_enemy_scene : Node2D = EnemyBaseScene.instance()
+		var new_enemy := new_enemy_scene as Enemy
+		new_enemy.generate(randi() % 4) 	#3.9 * nb_enemies / difficulty.nb_enemies.max_value)
+		new_enemy.scale = Vector2(0.5, 0.5)
+		new_enemy.position = Vector2(
+			-new_enemy.size / 2 + randi() % int(WIDTH - new_enemy.size * 2) + new_enemy.size,
+			-new_enemy.size / 2 + randi() % int(HEIGHT - new_enemy.size * 2) + new_enemy.size) * CELL_SIZE
+		add_child(new_enemy)
 
 func place_item(var path, var size, var celltype) -> void:
 	var sprite = Sprite.new()
