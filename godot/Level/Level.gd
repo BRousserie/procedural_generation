@@ -8,6 +8,7 @@ onready var room_pool := $Rooms
 # Generation variable
 var _noise := OpenSimplexNoise.new()
 var _rooms := {} # Room coordinates
+var _room_progression_values := {}
 var _corridor_sequence = [] # Room order in main corridor
 
 func _ready() -> void:
@@ -24,6 +25,7 @@ func generate(difficulty: LevelDifficulty) -> void:
 	
 	_generation_main_corridor_pass(difficulty)
 	_generation_branches_pass(difficulty)
+	_generation_fill_rooms_pass(difficulty)
 
 
 # Generates the main corridor
@@ -36,6 +38,7 @@ func _generation_main_corridor_pass(difficulty: LevelDifficulty) -> void:
 			int(sin(corridor_dir) * difficulty.level_length))
 
 	var start_room := _create_room_at(start_pos.x, start_pos.y, Room.RoomType.START)
+	_room_progression_values[start_room] = 0.0
 	var previous_room := start_room
 
 	var pos := Vector2(start_pos)
@@ -71,19 +74,31 @@ func _generation_branches_pass(difficulty: LevelDifficulty) -> void:
 	
 	var next_branch := avg_space
 	var progress := 0.0
+	
+	# room difficulties
+	var level_progression = 0.0
+	var progression_increment = 1.0 / float(room_count)
+	
 	for room in _corridor_sequence:
 		next_branch -= 1
 		progress += 1.0
+		level_progression += progression_increment
+		_room_progression_values[room] = level_progression
 		
 		if next_branch == 0:
 			next_branch = avg_space
 			var percent : float = progress / room_count
 			var branch_len : int = difficulty.min_branch_size + difficulty.branch_size_scale.interpolate(percent) * (difficulty.max_branch_size - difficulty.min_branch_size) 
-			_create_branch_at(room, branch_len)
+			_create_branch_at(room, branch_len, level_progression)
+
+
+func _generation_fill_rooms_pass(difficulty: LevelDifficulty) -> void:
+	for room in _rooms.values():
+		room.generate(difficulty, _room_progression_values[room])
 
 
 # Creates a branch of a fixed size from a room, returns false if not enough space
-func _create_branch_at(room: Room, length: int) -> bool:
+func _create_branch_at(room: Room, length: int, level_progression : float) -> bool:
 	if room.type != Room.RoomType.MAIN:
 		return false
 	
@@ -106,6 +121,7 @@ func _create_branch_at(room: Room, length: int) -> bool:
 		
 		var index := _get_card_index_from_dir(rand_dir)
 		var new_room := _create_room_at(rand_pos.x, rand_pos.y, Room.RoomType.BRANCH)
+		_room_progression_values[new_room] = level_progression
 		previous_room.set_door(index)
 		new_room.set_door(new_room.get_opposite_door(index))
 		
@@ -153,7 +169,7 @@ func _clear_rooms() -> void:
 		r.queue_free()
 
 
-func _create_room_at(x: int, y: int, type := Room.RoomType.MAIN) -> Room:
+func _create_room_at(x: int, y: int, type : int) -> Room:
 	var location := Vector2(x, y)
 	var new_room_scene : Node2D = RoomBaseScene.instance()
 	var new_room := new_room_scene as Room

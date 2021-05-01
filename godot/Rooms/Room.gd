@@ -34,14 +34,11 @@ var nb_barrels : int
 var _doors := [false, false, false, false]
 var cells = []
 
-func _ready() -> void:
-	generate()
-
-
 # Generates the room content
-func generate() -> void:
+func generate(difficulty: LevelDifficulty, level_progression: float) -> void:
 	create_room()
 	fill_room()
+
 
 func create_room() -> void:
 	fill_ground()
@@ -106,14 +103,11 @@ func place_lights() -> void:
 
 
 func place_enemies() -> void:
-	var new_enemy_scene : Node2D = EnemyBaseScene.instance()
-	var new_enemy := new_enemy_scene as Enemy
-	
-	new_room.type = type
-	new_room.location = location
-	new_room_scene.position = Vector2(x * new_room.get_pixel_width(), y * new_room.get_pixel_height())
+	pass
+	# var new_enemy_scene : Node2D = EnemyBaseScene.instance()
+	# var new_enemy := new_enemy_scene as Enemy
 
-	
+
 func place_item(var path, var margin, var celltype) -> void:
 	var sprite = Sprite.new()
 	sprite.texture = load(path)
