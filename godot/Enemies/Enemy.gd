@@ -46,8 +46,8 @@ func dr():
 				var sprite = Sprite.new()
 				type = res[i][j].possibilities[0].type
 				sprite.texture = load("res://Enemies/"+str(type)+".PNG")
-				sprite.position = Vector2(j* 60 + 25, i *60 +25)
-				sprite.scale = Vector2(0.5, 0.5)
+				sprite.position = Vector2(j* 50 + 25, i *50 +25)
+				sprite.scale = Vector2(1, 1)
 				add_child(sprite)
 
 			if(res[i][j].possibilities.size() > 1):
@@ -55,6 +55,6 @@ func dr():
 					var sprite = Sprite.new()
 					type = res[i][j].possibilities[k].type
 					sprite.texture = load("res://Enemies/"+str(type)+".PNG")
-					sprite.position = Vector2(j* 60 +(50/4)/2 + (50/4) * (k%4), i *60 +(50/4)/2+ (50/4) * (k/4))
-					sprite.scale = Vector2(0.125, 0.125)
+					sprite.position = Vector2(j* 50 +(50/4)/2 + (50/4) * (k%4), i *50 +(50/4)/2+ (50/4) * (k/4))
+					sprite.scale = Vector2(0.25, 0.25)
 					add_child(sprite)
